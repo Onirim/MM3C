@@ -5,7 +5,7 @@ export function pointBudget(character, campaignRules) {
     : Number(override);
 }
 
-export function calculateCosts(character, characteristics, defenses, skillRules) {
+export function calculateCosts(character, characteristics, defenses, skillRules, talentRules) {
   const traits = characteristics.reduce((sum, trait) => sum + Number(character.characteristics[trait.id] || 0) * trait.costPerRank, 0);
   const defenseBonuses = defenses.filter(defense => defense.buyable !== false)
     .reduce((sum, defense) => sum + Number(character.defenses[defense.id] || 0) * defense.costPerRank, 0);
@@ -16,18 +16,22 @@ export function calculateCosts(character, characteristics, defenses, skillRules)
       : Number(value.ranks || 0));
   }, 0);
   const skills = skillRanks / 2 * skillRules.costPerTwoRanks;
-  return { characteristics: traits, defenses: defenseBonuses, skills, skillRanks, total: traits + defenseBonuses + skills };
+  const talents = talentRules.talents.reduce((sum, talent) => sum + Number(character.talents[talent.id].ranks || 0) * talentRules.costPerRank, 0);
+  return { characteristics: traits, defenses: defenseBonuses, skills, skillRanks, talents, total: traits + defenseBonuses + skills + talents };
 }
 
-export function derivedDefenses(character, defenseRules) {
+export function derivedDefenses(character, defenseRules, talentRules) {
   return Object.fromEntries(defenseRules.map(defense => {
     const base = Number(character.characteristics[defense.baseFrom] || 0);
     const purchased = defense.buyable === false ? 0 : Number(character.defenses[defense.id] || 0);
-    return [defense.id, base + purchased];
+    const talentBonuses = talentRules.talents
+      .filter(talent => talent.defenseBonus?.defense === defense.id)
+      .reduce((sum, talent) => sum + Number(character.talents[talent.id]?.ranks || 0) * talent.defenseBonus.perRank, 0);
+    return [defense.id, base + purchased + talentBonuses];
   }));
 }
 
-export function validateCharacter(character, campaignRules, characteristics, defenseRules, skillRules, complicationRules) {
+export function validateCharacter(character, campaignRules, characteristics, defenseRules, skillRules, talentRules, complicationRules) {
   const issues = [];
   const info = [];
   const level = Number(character.campaign.powerLevel);
@@ -76,10 +80,21 @@ export function validateCharacter(character, campaignRules, characteristics, def
       }
     }
   }
-  const costs = calculateCosts(character, characteristics, defenseRules, skillRules);
+  for (const talent of talentRules.talents) {
+    const ranks = Number(character.talents[talent.id].ranks);
+    const maxRanks = talent.maxRanksPerPowerLevelDivisor
+      ? Math.floor(level / talent.maxRanksPerPowerLevelDivisor)
+      : talent.maxRanks;
+    if (!Number.isInteger(ranks) || ranks < 0) {
+      issues.push(`${talent.label} doit avoir un nombre entier de rangs ou d’acquisitions positif ou nul.`);
+    } else if (maxRanks !== null && maxRanks !== undefined && ranks > maxRanks) {
+      issues.push(`${talent.label} est limité à ${maxRanks} rang${maxRanks === 1 ? "" : "s"} au NP ${level}.`);
+    }
+  }
+  const costs = calculateCosts(character, characteristics, defenseRules, skillRules, talentRules);
   const remaining = budget - costs.total;
   if (remaining < 0) issues.push(`Budget dépassé de ${Math.abs(remaining)} point${Math.abs(remaining) === 1 ? "" : "s"}.`);
-  const defenses = derivedDefenses(character, defenseRules);
+  const defenses = derivedDefenses(character, defenseRules, talentRules);
   if (Number.isInteger(level) && level > 0) {
     const cap = campaignRules.powerLevelLimits.defensePairMultiplier * level;
     for (const pair of campaignRules.powerLevelLimits.defensePairs) {

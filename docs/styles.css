@@ -190,6 +190,26 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .remove-specialization:hover { background: #f9ece8; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
 
+.talent-search { max-width: 460px; display: grid; gap: 6px; margin-bottom: 19px; }
+.talent-search span { color: #4d5d75; font-size: 10px; font-weight: 700; }
+.talent-search input, .talent-choice input { width: 100%; min-width: 0; min-height: 38px; padding: 9px 11px; border: 1px solid #dce3ed; border-radius: 6px; background: #fcfdff; color: var(--ink); font: 500 11px 'DM Sans', sans-serif; }
+.talent-search input:focus, .talent-choice input:focus { border-color: #829cbb; outline: 0; box-shadow: 0 0 0 3px #6387b01a; }
+.talent-catalog { display: grid; gap: 22px; }
+.talent-category-title { margin: 0 0 10px; color: var(--green-deep); font: 700 14px 'Manrope', sans-serif; }
+.talent-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+.talent-card { min-width: 0; display: grid; align-content: start; gap: 10px; padding: 13px; border: 1px solid #e1e7f0; border-radius: 9px; background: var(--surface-soft); }
+.talent-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.talent-heading h3 { margin: 0; color: #344b69; font: 700 11px 'Manrope', sans-serif; }
+.talent-heading p { margin: 5px 0 0; color: var(--quiet); font-size: 9px; line-height: 1.45; }
+.talent-category-tag { flex: 0 0 auto; padding: 4px 6px; border-radius: 5px; background: #edf1f6; color: #68778d; font-size: 8px; }
+.talent-choice { display: grid; gap: 5px; }
+.talent-choice span { color: var(--muted); font-size: 9px; font-weight: 700; }
+.talent-choice input { min-height: 34px; padding: 7px 9px; font-size: 10px; }
+.talent-purchase-row { display: flex; align-items: center; gap: 9px; padding-top: 8px; border-top: 1px solid #e5eaf1; }
+.talent-count-label { margin-right: auto; color: var(--muted); font-size: 9px; }
+.talent-stepper { flex: 0 0 auto; }
+.empty-talents { margin: 4px 0; color: var(--quiet); font-size: 10px; }
+
 .complication-list { display: grid; gap: 10px; }
 .complication-row { display: grid; grid-template-columns: minmax(145px, .27fr) minmax(0, 1fr) 36px; align-items: start; gap: 10px; padding: 11px; border: 1px solid #e3e9e4; border-radius: 8px; background: var(--surface-soft); }
 .complication-row select, .complication-row textarea { background-color: #fff; }
@@ -308,6 +328,14 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 :root[data-theme="dark"] .skill-specialization-name, :root[data-theme="dark"] .add-specialization input { border-color: #3b4b62; background: #141c29; color: #e1e8f1; }
 :root[data-theme="dark"] .remove-specialization { border-color: #583e38; background: #332522; color: #e3a196; }
 :root[data-theme="dark"] .remove-specialization:hover { background: #432d28; }
+:root[data-theme="dark"] .talent-search span { color: #c6d2e2; }
+:root[data-theme="dark"] .talent-search input, :root[data-theme="dark"] .talent-choice input { border-color: #3b4b62; background: #141c29; color: #e1e8f1; }
+:root[data-theme="dark"] .talent-category-title { color: #d8e3f2; }
+:root[data-theme="dark"] .talent-card { border-color: #35435a; background: #202a39; }
+:root[data-theme="dark"] .talent-heading h3 { color: #d5e1f0; }
+:root[data-theme="dark"] .talent-heading p { color: #9aa9bd; }
+:root[data-theme="dark"] .talent-category-tag { background: #29364a; color: #aab8ca; }
+:root[data-theme="dark"] .talent-purchase-row { border-top-color: #35435a; }
 :root[data-theme="dark"] .remove-complication { border-color: #583e38; background: #332522; color: #e3a196; }
 :root[data-theme="dark"] .remove-complication:hover { background: #432d28; }
 :root[data-theme="dark"] .panel-navigation { border-top-color: #303e53; }
@@ -354,6 +382,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .trait-card { padding: 10px; }
   .skill-grid { grid-template-columns: 1fr; }
   .skill-specialization-row { grid-template-columns: minmax(0, 1fr) auto auto auto; }
+  .talent-grid { grid-template-columns: 1fr; }
   .rank-stepper { grid-template-columns: 24px 38px 24px; }
   .rank-stepper input { width: 38px; }
   .rank-stepper-button { width: 24px; }

@@ -40,7 +40,8 @@
         <button class="tab-button" id="tab-caracteristiques" type="button" role="tab" aria-selected="false" aria-controls="caracteristiques" tabindex="-1" data-tab="caracteristiques"><span>03</span> Caractéristiques</button>
         <button class="tab-button" id="tab-defenses" type="button" role="tab" aria-selected="false" aria-controls="defenses" tabindex="-1" data-tab="defenses"><span>04</span> Défenses</button>
         <button class="tab-button" id="tab-competences" type="button" role="tab" aria-selected="false" aria-controls="competences" tabindex="-1" data-tab="competences"><span>05</span> Compétences</button>
-        <button class="tab-button" id="tab-complications" type="button" role="tab" aria-selected="false" aria-controls="complications" tabindex="-1" data-tab="complications"><span>06</span> Complications</button>
+        <button class="tab-button" id="tab-talents" type="button" role="tab" aria-selected="false" aria-controls="talents" tabindex="-1" data-tab="talents"><span>06</span> Talents</button>
+        <button class="tab-button" id="tab-complications" type="button" role="tab" aria-selected="false" aria-controls="complications" tabindex="-1" data-tab="complications"><span>07</span> Complications</button>
       </nav>
 
       <section class="overview" aria-label="Résumé des points et vérifications">
@@ -101,7 +102,7 @@
 
         <section class="panel tab-panel" id="defenses" role="tabpanel" aria-labelledby="tab-defenses" tabindex="0" hidden>
           <div class="panel-heading"><div><div class="eyebrow">ÉTAPE 04</div><h2>Défenses</h2><p>Valeurs de base et rangs supplémentaires.</p></div><span class="panel-icon">⬢</span></div>
-          <p class="section-intro">Saisissez les rangs achetés au-dessus des valeurs de base. La Robustesse est égale à l’Endurance ; un pouvoir ou un objet approprié peut l’augmenter.</p>
+          <p class="section-intro">Saisissez les rangs achetés au-dessus des valeurs de base. La Robustesse vient de l’Endurance ; le talent Amortissement ou un pouvoir/objet approprié peut l’augmenter.</p>
           <div class="trait-grid" id="defense-fields"></div>
           <div class="panel-navigation"><button class="button button-quiet" type="button" data-tab-target="caracteristiques"><span aria-hidden="true">←</span> Caractéristiques</button><button class="button button-primary" type="button" data-tab-target="competences">Continuer <span aria-hidden="true">→</span></button></div>
         </section>
@@ -110,15 +111,23 @@
           <div class="panel-heading"><div><div class="eyebrow">ÉTAPE 05</div><h2>Compétences</h2><p>Entraînement, savoir-faire et spécialités.</p></div><span class="panel-icon">✧</span></div>
           <p class="section-intro">1 point de pouvoir achète 2 rangs de compétence. Les rangs s’ajoutent au modificateur de caractéristique ; le bonus total d’un test ne peut dépasser le NP +10.</p>
           <div id="skill-fields" class="skill-catalog"></div>
-          <div class="panel-navigation"><button class="button button-quiet" type="button" data-tab-target="defenses"><span aria-hidden="true">←</span> Défenses</button><button class="button button-primary" type="button" data-tab-target="complications">Continuer <span aria-hidden="true">→</span></button></div>
+          <div class="panel-navigation"><button class="button button-quiet" type="button" data-tab-target="defenses"><span aria-hidden="true">←</span> Défenses</button><button class="button button-primary" type="button" data-tab-target="talents">Continuer <span aria-hidden="true">→</span></button></div>
+        </section>
+
+        <section class="panel tab-panel" id="talents" role="tabpanel" aria-labelledby="tab-talents" tabindex="0" hidden>
+          <div class="panel-heading"><div><div class="eyebrow">ÉTAPE 06</div><h2>Talents</h2><p>Des avantages remarquables pour votre héros.</p></div><span class="panel-icon">✦</span></div>
+          <p class="section-intro">Chaque rang ou acquisition coûte 1 point de pouvoir. Les talents sont classés selon les catégories du manuel ; les choix particuliers peuvent être notés sur leur fiche.</p>
+          <label class="talent-search"><span>Rechercher un talent</span><input id="talent-search" type="search" placeholder="Nom ou effet…"></label>
+          <div id="talent-fields" class="talent-catalog"></div>
+          <div class="panel-navigation"><button class="button button-quiet" type="button" data-tab-target="competences"><span aria-hidden="true">←</span> Compétences</button><button class="button button-primary" type="button" data-tab-target="complications">Continuer <span aria-hidden="true">→</span></button></div>
         </section>
 
         <section class="panel tab-panel" id="complications" role="tabpanel" aria-labelledby="tab-complications" tabindex="0" hidden>
-          <div class="panel-heading"><div><div class="eyebrow">ÉTAPE 06</div><h2>Complications</h2><p>Les défis personnels qui donnent du relief à votre héros.</p></div><span class="panel-icon">✧</span></div>
+          <div class="panel-heading"><div><div class="eyebrow">ÉTAPE 07</div><h2>Complications</h2><p>Les défis personnels qui donnent du relief à votre héros.</p></div><span class="panel-icon">✧</span></div>
           <p class="section-intro">Ajoutez au moins deux complications, dont une motivation. Décrivez comment elles influencent votre héros.</p>
           <div id="complication-list" class="complication-list"></div>
           <button class="button button-secondary" id="add-complication" type="button">＋ Ajouter une complication</button>
-          <div class="panel-navigation"><button class="button button-quiet" type="button" data-tab-target="competences"><span aria-hidden="true">←</span> Compétences</button><span class="last-step-note">Vous pouvez revenir aux onglets à tout moment.</span></div>
+          <div class="panel-navigation"><button class="button button-quiet" type="button" data-tab-target="talents"><span aria-hidden="true">←</span> Talents</button><span class="last-step-note">Vous pouvez revenir aux onglets à tout moment.</span></div>
         </section>
       </form>
 
