@@ -68,15 +68,18 @@ form.addEventListener("click", event => {
   if (button) activateTab(button.dataset.tabTarget, true);
 });
 form.addEventListener("click", event => {
-  const button = event.target.closest("[data-step]");
+  const button = event.target.closest("[data-step], [data-rank-step]");
   if (!button) return;
-  const input = button.closest(".number-stepper")?.querySelector('input[type="number"]');
+  const input = button.closest(".number-stepper, .rank-stepper")?.querySelector('input[type="number"]');
   if (!input) return;
-  const current = input.value === "" ? pointBudget(character, campaignRules) : Number(input.value);
+  const current = input.value === ""
+    ? input.dataset.path === "campaign.startingPowerPoints" ? pointBudget(character, campaignRules) : 0
+    : Number(input.value);
   const step = Number(input.step) || 1;
   const min = input.min === "" ? 0 : Number(input.min);
   const max = input.max === "" ? Number.POSITIVE_INFINITY : Number(input.max);
-  input.value = String(Math.min(max, Math.max(min, current + Number(button.dataset.step) * step)));
+  const direction = Number(button.dataset.step ?? button.dataset.rankStep);
+  input.value = String(Math.min(max, Math.max(min, current + direction * step)));
   input.dispatchEvent(new Event("input", { bubbles: true }));
 });
 
@@ -94,18 +97,18 @@ function syncForm() {
 
 function renderCharacteristics() {
   $("#characteristic-fields").innerHTML = characteristics.map(trait => `
-    <label class="trait-card">
+    <div class="trait-card">
       <span><span class="trait-name">${trait.label} <small>${trait.shortLabel}</small></span><span class="trait-description">${trait.description}</span></span>
-      <span class="trait-control"><input type="number" min="${trait.minRank}" max="${trait.maxRank}" step="1" value="${character.characteristics[trait.id]}" data-rank="characteristics.${trait.id}" aria-label="Rang de ${trait.label}"><span class="trait-cost" data-cost="characteristics.${trait.id}">0 PP</span></span>
-    </label>`).join("");
+      <span class="trait-control"><span class="rank-stepper"><button class="rank-stepper-button" type="button" data-rank-step="-1" aria-label="Diminuer ${trait.label} d’un rang">−</button><input type="number" min="${trait.minRank}" max="${trait.maxRank}" step="1" value="${character.characteristics[trait.id]}" data-rank="characteristics.${trait.id}" aria-label="Rang de ${trait.label}"><button class="rank-stepper-button" type="button" data-rank-step="1" aria-label="Augmenter ${trait.label} d’un rang">+</button></span><span class="trait-cost" data-cost="characteristics.${trait.id}">0 PP</span></span>
+    </div>`).join("");
 }
 
 function renderDefenses() {
   $("#defense-fields").innerHTML = defenseRules.map(defense => `
-    <label class="trait-card">
+    <div class="trait-card">
       <span><span class="trait-name">${defense.id === "protection" ? "Protection" : defense.label} <small>${defense.shortLabel}</small></span><span class="trait-description">${defense.id === "protection" ? "Rangs de l’effet Protection" : `Base : ${characteristics.find(trait => trait.id === defense.baseFrom).label}`}</span></span>
-      <span class="trait-control"><input type="number" min="0" max="20" step="1" value="${character.defenses[defense.id]}" data-rank="defenses.${defense.id}" aria-label="Rang acheté de ${defense.label}"><span class="trait-cost" data-cost="defenses.${defense.id}">0 PP</span></span>
-    </label>`).join("");
+      <span class="trait-control"><span class="rank-stepper"><button class="rank-stepper-button" type="button" data-rank-step="-1" aria-label="Diminuer ${defense.label} d’un rang">−</button><input type="number" min="0" max="20" step="1" value="${character.defenses[defense.id]}" data-rank="defenses.${defense.id}" aria-label="Rang acheté de ${defense.label}"><button class="rank-stepper-button" type="button" data-rank-step="1" aria-label="Augmenter ${defense.label} d’un rang">+</button></span><span class="trait-cost" data-cost="defenses.${defense.id}">0 PP</span></span>
+    </div>`).join("");
 }
 
 function renderComplications() {
@@ -172,13 +175,15 @@ function readInputValue(input) {
 }
 
 function syncStepperButtons() {
-  for (const wrapper of document.querySelectorAll(".number-stepper")) {
+  for (const wrapper of document.querySelectorAll(".number-stepper, .rank-stepper")) {
     const input = wrapper.querySelector('input[type="number"]');
-    const value = input.value === "" ? pointBudget(character, campaignRules) : Number(input.value);
+    const value = input.value === ""
+      ? input.dataset.path === "campaign.startingPowerPoints" ? pointBudget(character, campaignRules) : 0
+      : Number(input.value);
     const min = input.min === "" ? 0 : Number(input.min);
     const max = input.max === "" ? Number.POSITIVE_INFINITY : Number(input.max);
-    wrapper.querySelector('[data-step="-1"]').disabled = value <= min;
-    wrapper.querySelector('[data-step="1"]').disabled = value >= max;
+    wrapper.querySelector('[data-step="-1"], [data-rank-step="-1"]').disabled = value <= min;
+    wrapper.querySelector('[data-step="1"], [data-rank-step="1"]').disabled = value >= max;
   }
 }
 
