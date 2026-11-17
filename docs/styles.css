@@ -93,8 +93,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .budget-track span.over-budget { background: #c66d5e; }
 .budget-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--quiet); font-size: 9px; }
 .budget-foot span:first-child { color: var(--green-deep); font-weight: 700; }
-.overview-validation { align-self: stretch; padding: 0 14px; }
-.overview-validation > summary { min-height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; color: #586b60; font-size: 11px; font-weight: 700; cursor: pointer; list-style: none; }
+.overview-validation { align-self: start; padding: 0 14px; }
+.overview-validation > summary { min-height: 44px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 13px 0 9px; color: #586b60; font-size: 11px; font-weight: 700; cursor: pointer; list-style: none; }
 .overview-validation > summary::-webkit-details-marker { display: none; }
 .validation-summary-label { display: inline-flex; align-items: center; gap: 8px; }
 .summary-chevron { color: #9aa69e; transition: transform .15s; }
@@ -117,12 +117,22 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .two-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .three-columns { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .field { display: grid; gap: 6px; min-width: 0; }
-.field > span { color: #53645a; font-size: 10px; font-weight: 700; }
+.field > span, .field > label { color: #53645a; font-size: 10px; font-weight: 700; }
 .field input, .field select, .field textarea, .trait-control input, .complication-row select, .complication-row textarea { width: 100%; min-width: 0; border: 1px solid #dce4de; border-radius: 6px; background: #fcfdfc; color: var(--ink); padding: 10px 11px; font: 500 12px 'DM Sans', sans-serif; outline: none; transition: border .14s, box-shadow .14s; }
 .field input:focus, .field select:focus, .field textarea:focus, .trait-control input:focus, .complication-row select:focus, .complication-row textarea:focus { border-color: #8aa493; box-shadow: 0 0 0 3px #6689761a; }
 .field input::placeholder, .field textarea::placeholder, .complication-row textarea::placeholder { color: #a4afa8; }
 .field select, .complication-row select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, #75877b 50%), linear-gradient(135deg, #75877b 50%, transparent 50%); background-position: calc(100% - 15px) 16px, calc(100% - 11px) 16px; background-size: 4px 4px; background-repeat: no-repeat; }
 .field small { color: var(--quiet); font-size: 9px; line-height: 1.4; }
+.number-stepper { width: min(100%, 220px); min-height: 44px; display: grid; grid-template-columns: 36px minmax(50px, 1fr) 36px; align-items: center; gap: 3px; padding: 3px; border: 1px solid #d7e1d9; border-radius: 8px; background: #f8faf8; transition: border-color .15s, box-shadow .15s; }
+.number-stepper:focus-within { border-color: #86a08e; box-shadow: 0 0 0 3px #6689761a; }
+.number-stepper input { width: 100%; min-width: 0; height: 35px; padding: 0 4px; border: 0; border-radius: 5px; background: transparent; color: var(--green-deep); font: 700 17px 'Manrope', sans-serif; text-align: center; outline: 0; box-shadow: none; }
+.number-stepper input:focus { border: 0; outline: 0; box-shadow: none; }
+.number-stepper input::-webkit-inner-spin-button, .number-stepper input::-webkit-outer-spin-button { margin: 0; appearance: none; }
+.number-stepper input[type="number"] { appearance: textfield; -moz-appearance: textfield; }
+.stepper-button { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid transparent; border-radius: 6px; background: #e9efe9; color: #476451; font: 600 18px 'DM Sans', sans-serif; line-height: 1; cursor: pointer; transition: background .14s, color .14s, transform .14s; }
+.stepper-button:hover:not(:disabled) { transform: translateY(-1px); background: #dce8dd; color: #294d39; }
+.stepper-button:active:not(:disabled) { transform: translateY(0); background: #ceddce; }
+.stepper-button:disabled { color: #a5b0a8; background: #f1f4f1; cursor: not-allowed; }
 .field textarea, .complication-row textarea { resize: vertical; line-height: 1.55; }
 .full-width { grid-column: 1 / -1; }
 
@@ -213,7 +223,16 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 :root[data-theme="dark"] .panel-heading p, :root[data-theme="dark"] .section-intro { color: #a6b2a9; }
 :root[data-theme="dark"] .panel-icon { border-color: #51482f; background: #2b2b21; color: #d5b875; }
 :root[data-theme="dark"] .field > span { color: #c2cec4; }
+:root[data-theme="dark"] .field > label { color: #c2cec4; }
 :root[data-theme="dark"] .field input, :root[data-theme="dark"] .field select, :root[data-theme="dark"] .field textarea, :root[data-theme="dark"] .trait-control input, :root[data-theme="dark"] .complication-row select, :root[data-theme="dark"] .complication-row textarea { border-color: #3a4b40; background-color: #121a15; color: #e0e8e1; }
+:root[data-theme="dark"] .number-stepper { border-color: #3a4b40; background: #121a15; }
+:root[data-theme="dark"] .number-stepper:focus-within { border-color: #78967f; box-shadow: 0 0 0 3px #78967f2b; }
+:root[data-theme="dark"] .number-stepper input { border: 0; background: transparent; color: #e0e9e1; }
+:root[data-theme="dark"] .number-stepper input:focus { border: 0; background: transparent; box-shadow: none; }
+:root[data-theme="dark"] .stepper-button { background: #293a2e; color: #c9dccb; }
+:root[data-theme="dark"] .stepper-button:hover:not(:disabled) { background: #385341; color: #eef5ed; }
+:root[data-theme="dark"] .stepper-button:active:not(:disabled) { background: #42634b; }
+:root[data-theme="dark"] .stepper-button:disabled { background: #1a241e; color: #6e7d72; }
 :root[data-theme="dark"] .field input::placeholder, :root[data-theme="dark"] .field textarea::placeholder, :root[data-theme="dark"] .complication-row textarea::placeholder { color: #718176; }
 :root[data-theme="dark"] .field select, :root[data-theme="dark"] .complication-row select { background-image: linear-gradient(45deg, transparent 50%, #aab9ac 50%), linear-gradient(135deg, #aab9ac 50%, transparent 50%); }
 :root[data-theme="dark"] .field small { color: #91a095; }

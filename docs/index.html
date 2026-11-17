@@ -64,9 +64,9 @@
       <form id="character-form" novalidate>
         <section class="panel tab-panel" id="campagne" role="tabpanel" aria-labelledby="tab-campagne" tabindex="0">
           <div class="panel-heading"><div><div class="eyebrow">ÉTAPE 01</div><h2>Campagne</h2><p>Réglez la puissance et le budget de départ.</p></div><span class="panel-icon">✦</span></div>
-          <div class="field-grid two-columns">
-            <label class="field"><span>Niveau de puissance</span><input type="number" min="1" max="20" step="1" data-path="campaign.powerLevel"></label>
-            <label class="field"><span>Budget de points de pouvoir</span><input type="number" min="0" step="1" data-path="campaign.startingPowerPoints"><small id="budget-hint"></small></label>
+          <div class="field-grid two-columns campaign-fields">
+            <div class="field"><label for="power-level">Niveau de puissance</label><div class="number-stepper"><button class="stepper-button" type="button" data-step="-1" aria-label="Diminuer le niveau de puissance">−</button><input id="power-level" type="number" min="1" max="20" step="1" data-path="campaign.powerLevel" aria-label="Niveau de puissance"><button class="stepper-button" type="button" data-step="1" aria-label="Augmenter le niveau de puissance">+</button></div></div>
+            <div class="field"><label for="power-points">Budget de points de pouvoir</label><div class="number-stepper"><button class="stepper-button" type="button" data-step="-1" aria-label="Diminuer le budget de points">−</button><input id="power-points" type="number" min="0" max="1000" step="1" data-path="campaign.startingPowerPoints" aria-label="Budget personnalisé en points de pouvoir"><button class="stepper-button" type="button" data-step="1" aria-label="Augmenter le budget de points">+</button></div><small id="budget-hint"></small></div>
           </div>
           <div class="panel-navigation panel-navigation-end"><button class="button button-primary" type="button" data-tab-target="identite">Continuer vers l’identité <span aria-hidden="true">→</span></button></div>
         </section>

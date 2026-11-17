@@ -67,6 +67,18 @@ form.addEventListener("click", event => {
   const button = event.target.closest("[data-tab-target]");
   if (button) activateTab(button.dataset.tabTarget, true);
 });
+form.addEventListener("click", event => {
+  const button = event.target.closest("[data-step]");
+  if (!button) return;
+  const input = button.closest(".number-stepper")?.querySelector('input[type="number"]');
+  if (!input) return;
+  const current = input.value === "" ? pointBudget(character, campaignRules) : Number(input.value);
+  const step = Number(input.step) || 1;
+  const min = input.min === "" ? 0 : Number(input.min);
+  const max = input.max === "" ? Number.POSITIVE_INFINITY : Number(input.max);
+  input.value = String(Math.min(max, Math.max(min, current + Number(button.dataset.step) * step)));
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+});
 
 function setInputValue(input, value) {
   input.value = value ?? "";
@@ -143,6 +155,7 @@ function render() {
   const hasIssues = result.issues.length > 0;
   $("#status-dot").classList.toggle("has-issues", hasIssues);
   $("#validation-title").textContent = hasIssues ? `${result.issues.length} alerte${result.issues.length === 1 ? "" : "s"}` : "Aucune alerte";
+  syncStepperButtons();
 }
 
 function showToast(message) {
@@ -152,11 +165,27 @@ function showToast(message) {
   toastTimer = setTimeout(() => toast.classList.remove("visible"), 2600);
 }
 
+function readInputValue(input) {
+  if (input.type !== "number") return input.value;
+  if (input.value !== "") return Number(input.value);
+  return input.dataset.path === "campaign.startingPowerPoints" ? null : 0;
+}
+
+function syncStepperButtons() {
+  for (const wrapper of document.querySelectorAll(".number-stepper")) {
+    const input = wrapper.querySelector('input[type="number"]');
+    const value = input.value === "" ? pointBudget(character, campaignRules) : Number(input.value);
+    const min = input.min === "" ? 0 : Number(input.min);
+    const max = input.max === "" ? Number.POSITIVE_INFINITY : Number(input.max);
+    wrapper.querySelector('[data-step="-1"]').disabled = value <= min;
+    wrapper.querySelector('[data-step="1"]').disabled = value >= max;
+  }
+}
+
 form.addEventListener("input", event => {
   const input = event.target;
   if (input.dataset.path) {
-    const value = input.type === "number" ? (input.value === "" ? 0 : Number(input.value)) : input.value;
-    setPath(character, input.dataset.path, value);
+    setPath(character, input.dataset.path, readInputValue(input));
     render();
   } else if (input.dataset.rank) {
     const [group, id] = input.dataset.rank.split(".");
@@ -168,8 +197,7 @@ form.addEventListener("input", event => {
 form.addEventListener("change", event => {
   const input = event.target;
   if (input.dataset.path) {
-    const value = input.type === "number" ? (input.value === "" ? null : Number(input.value)) : input.value;
-    setPath(character, input.dataset.path, value);
+    setPath(character, input.dataset.path, readInputValue(input));
     render();
   } else if (input.dataset.rank) {
     const [group, id] = input.dataset.rank.split(".");
