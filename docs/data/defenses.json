@@ -1,0 +1,7 @@
+[
+  { "id": "dodge", "label": "Esquive", "shortLabel": "ESQ", "baseFrom": "agility", "costPerRank": 1, "powerLevelCap": "dodgeToughness", "description": "Évite les attaques à distance" },
+  { "id": "parry", "label": "Parade", "shortLabel": "PAR", "baseFrom": "fighting", "costPerRank": 1, "powerLevelCap": "parryToughness", "description": "Évite les attaques au contact" },
+  { "id": "fortitude", "label": "Vigueur", "shortLabel": "VIG", "baseFrom": "stamina", "costPerRank": 1, "powerLevelCap": "fortitudeWill", "description": "Résiste aux effets physiques" },
+  { "id": "will", "label": "Volonté", "shortLabel": "VOL", "baseFrom": "awareness", "costPerRank": 1, "powerLevelCap": "fortitudeWill", "description": "Résiste aux effets mentaux" },
+  { "id": "protection", "label": "Protection", "shortLabel": "PROT", "baseFrom": "stamina", "costPerRank": 1, "powerLevelCap": "toughness", "description": "Effet qui augmente la Robustesse" }
+]

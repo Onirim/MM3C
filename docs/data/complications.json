@@ -1,0 +1,14 @@
+{
+  "minimumCount": 2,
+  "requiredType": "motivation",
+  "types": [
+    { "id": "motivation", "label": "Motivation", "description": "Ce qui pousse le héros à agir." },
+    { "id": "relationship", "label": "Relation", "description": "Une personne ou un lien important." },
+    { "id": "responsibility", "label": "Responsabilité", "description": "Une obligation qui entre en conflit avec l’héroïsme." },
+    { "id": "reputation", "label": "Réputation", "description": "La façon dont les autres perçoivent le héros." },
+    { "id": "identity", "label": "Identité secrète", "description": "Les risques liés à la vie civile du héros." },
+    { "id": "enemy", "label": "Ennemi ou rival", "description": "Une menace personnelle récurrente." },
+    { "id": "weakness", "label": "Faiblesse", "description": "Une vulnérabilité ou une limite personnelle." },
+    { "id": "other", "label": "Autre", "description": "Toute autre complication validée par le MJ." }
+  ]
+}

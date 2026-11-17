@@ -1,0 +1,16 @@
+{
+  "id": "mm3e-fr-core",
+  "label": "Mutants & Masterminds 3e — réglages de campagne",
+  "defaultPowerLevel": 10,
+  "defaultPointsPerPowerLevel": 15,
+  "powerLevel": { "min": 1, "max": 20 },
+  "startingPoints": { "min": 0, "max": 1000 },
+  "powerLevelLimits": {
+    "defensePairMultiplier": 2,
+    "defensePairs": [
+      { "label": "Esquive + Robustesse", "traits": ["dodge", "toughness"] },
+      { "label": "Parade + Robustesse", "traits": ["parry", "toughness"] },
+      { "label": "Vigueur + Volonté", "traits": ["fortitude", "will"] }
+    ]
+  }
+}

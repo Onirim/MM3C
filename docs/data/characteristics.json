@@ -1,0 +1,10 @@
+[
+  { "id": "strength", "label": "Force", "shortLabel": "FOR", "description": "Puissance physique", "costPerRank": 2, "minRank": -5, "maxRank": 20 },
+  { "id": "stamina", "label": "Endurance", "shortLabel": "END", "description": "Santé et résistance", "costPerRank": 2, "minRank": -5, "maxRank": 20 },
+  { "id": "dexterity", "label": "Dextérité", "shortLabel": "DEX", "description": "Précision et habileté manuelle", "costPerRank": 2, "minRank": -5, "maxRank": 20 },
+  { "id": "agility", "label": "Agilité", "shortLabel": "AGI", "description": "Coordination et réflexes", "costPerRank": 2, "minRank": -5, "maxRank": 20 },
+  { "id": "fighting", "label": "Combativité", "shortLabel": "CBT", "description": "Aptitudes au combat rapproché", "costPerRank": 2, "minRank": -5, "maxRank": 20 },
+  { "id": "intellect", "label": "Intelligence", "shortLabel": "INT", "description": "Raisonnement et apprentissage", "costPerRank": 2, "minRank": -5, "maxRank": 20 },
+  { "id": "awareness", "label": "Sensibilité", "shortLabel": "SNS", "description": "Intuition et perception", "costPerRank": 2, "minRank": -5, "maxRank": 20 },
+  { "id": "presence", "label": "Présence", "shortLabel": "PRS", "description": "Personnalité et influence", "costPerRank": 2, "minRank": -5, "maxRank": 20 }
+]

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#111827">
+    <meta name="description" content="Créateur statique de personnages Mutants & Masterminds, troisième édition.">
+    <title>MM3C — Créateur de héros</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="./src/main.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="MM3C, accueil">
+        <span class="brand-mark">M³</span>
+        <span><strong>MM3C</strong><small>Mutants & Masterminds 3e</small></span>
+      </a>
+      <div class="top-actions">
+        <button class="button button-quiet" id="import-button" type="button">Importer</button>
+        <input id="import-file" type="file" accept="application/json,.json" hidden>
+        <button class="button button-primary" id="export-button" type="button">Exporter le personnage</button>
+      </div>
+    </header>
+
+    <main id="top" class="layout">
+      <aside class="sidebar" aria-label="Étapes de création">
+        <div class="sidebar-heading">Votre héros</div>
+        <nav>
+          <a href="#campagne"><span>01</span> Campagne</a>
+          <a href="#identite"><span>02</span> Identité</a>
+          <a href="#caracteristiques"><span>03</span> Caractéristiques</a>
+          <a href="#defenses"><span>04</span> Défenses</a>
+          <a href="#complications"><span>05</span> Complications</a>
+        </nav>
+        <div class="sidebar-note">Votre fiche reste dans cette page. Pensez à l’exporter pour en garder une copie.</div>
+      </aside>
+
+      <div class="content-column">
+        <section class="welcome">
+          <div class="eyebrow">CRÉATION DE PERSONNAGE</div>
+          <h1>Donnez vie à votre héros.</h1>
+          <p>Définissez votre campagne, répartissez vos points et vérifiez les limites au fil de la création.</p>
+        </section>
+
+        <form id="character-form" novalidate>
+          <section class="panel" id="campagne">
+            <div class="panel-heading"><div><div class="eyebrow">ÉTAPE 01</div><h2>Campagne</h2></div><span class="panel-icon">✦</span></div>
+            <p class="section-intro">Le niveau de puissance fixe les limites de la série. Le budget proposé est modifiable selon les règles de votre table.</p>
+            <div class="field-grid two-columns">
+              <label class="field"><span>Niveau de puissance</span><input type="number" min="1" max="20" step="1" data-path="campaign.powerLevel"></label>
+              <label class="field"><span>Budget de points de pouvoir</span><input type="number" min="0" step="1" data-path="campaign.startingPowerPoints"><small id="budget-hint"></small></label>
+            </div>
+          </section>
+
+          <section class="panel" id="identite">
+            <div class="panel-heading"><div><div class="eyebrow">ÉTAPE 02</div><h2>Identité</h2></div><span class="panel-icon">◈</span></div>
+            <div class="field-grid two-columns">
+              <label class="field"><span>Nom du héros</span><input type="text" data-path="identity.heroName" placeholder="Ex. Nova"></label>
+              <label class="field"><span>Nom du joueur</span><input type="text" data-path="identity.playerName" placeholder="Votre nom"></label>
+              <label class="field"><span>Identité</span><select data-path="identity.identity"><option value="secrete">Secrète</option><option value="publique">Publique</option><option value="inconnue">Inconnue</option></select></label>
+              <label class="field"><span>Origine</span><input type="text" data-path="identity.origin" placeholder="Mutation, technologie, magie…"></label>
+              <label class="field"><span>Âge</span><input type="text" data-path="identity.age" placeholder=""></label>
+              <label class="field"><span>Affiliation</span><input type="text" data-path="identity.affiliation" placeholder="Équipe ou organisation"></label>
+              <label class="field"><span>Taille</span><input type="text" data-path="identity.height"></label>
+              <label class="field"><span>Poids</span><input type="text" data-path="identity.weight"></label>
+              <label class="field"><span>Yeux</span><input type="text" data-path="identity.eyes"></label>
+              <label class="field"><span>Cheveux</span><input type="text" data-path="identity.hair"></label>
+              <label class="field"><span>Base d’opération</span><input type="text" data-path="identity.base"></label>
+              <label class="field"><span>Apparence</span><input type="text" data-path="identity.appearance"></label>
+              <label class="field full-width"><span>Historique et personnalité</span><textarea rows="3" data-path="identity.background" placeholder="Quelques lignes pour présenter votre personnage…"></textarea></label>
+            </div>
+          </section>
+
+          <section class="panel" id="caracteristiques">
+            <div class="panel-heading"><div><div class="eyebrow">ÉTAPE 03</div><h2>Caractéristiques</h2></div><span class="panel-icon">⬡</span></div>
+            <p class="section-intro">Les rangs commencent à 0. Un rang coûte 2 points de pouvoir ; les rangs négatifs rendent des points.</p>
+            <div class="trait-grid" id="characteristic-fields"></div>
+          </section>
+
+          <section class="panel" id="defenses">
+            <div class="panel-heading"><div><div class="eyebrow">ÉTAPE 04</div><h2>Défenses</h2></div><span class="panel-icon">⬢</span></div>
+            <p class="section-intro">Saisissez les rangs achetés au-dessus des valeurs de base. La Robustesse vient de l’Endurance, augmentée ici par l’effet Protection.</p>
+            <div class="trait-grid" id="defense-fields"></div>
+            <div class="defense-summary" id="defense-summary"></div>
+          </section>
+
+          <section class="panel" id="complications">
+            <div class="panel-heading"><div><div class="eyebrow">ÉTAPE 05</div><h2>Complications</h2></div><span class="panel-icon">✧</span></div>
+            <p class="section-intro">Ajoutez au moins deux complications, dont une motivation. Décrivez comment elles influencent votre héros.</p>
+            <div id="complication-list" class="complication-list"></div>
+            <button class="button button-secondary" id="add-complication" type="button">＋ Ajouter une complication</button>
+          </section>
+        </form>
+
+        <footer class="page-footer">MM3C · Créateur non officiel · Les calculs et limites de campagne restent ajustables par le MJ.</footer>
+      </div>
+
+      <aside class="summary-column" aria-label="Résumé du personnage">
+        <div class="summary-card">
+          <div class="eyebrow">RÉSUMÉ DE LA FICHE</div>
+          <h2 id="summary-name">Nouveau héros</h2>
+          <p class="summary-subtitle" id="summary-level">Niveau de puissance 10</p>
+          <div class="budget-block">
+            <div class="budget-line"><span>Points dépensés</span><strong id="spent-points">0</strong></div>
+            <div class="budget-track"><span id="budget-progress"></span></div>
+            <div class="budget-line budget-remaining"><span id="remaining-label">Points restants</span><strong id="remaining-points">150</strong></div>
+          </div>
+          <div class="summary-breakdown" id="cost-breakdown"></div>
+        </div>
+        <div class="validation-card">
+          <div class="validation-heading"><span class="status-dot" id="status-dot"></span><h3 id="validation-title">Vérifications</h3></div>
+          <ul id="validation-list" class="validation-list"></ul>
+        </div>
+        <div class="rules-note"><strong>Règles de niveau de puissance</strong><p>Les limites de Robustesse s’appliquent à Esquive, Parade, Vigueur et Volonté. Les limites d’attaque, de compétence et d’effet seront contrôlées dans leurs étapes dédiées.</p></div>
+      </aside>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
