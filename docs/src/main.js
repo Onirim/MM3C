@@ -16,6 +16,43 @@ let toastTimer;
 const $ = selector => document.querySelector(selector);
 const form = $("#character-form");
 const toast = $("#toast");
+const tabButtons = [...document.querySelectorAll("[role=tab]")];
+const tabPanels = [...document.querySelectorAll("[role=tabpanel]")];
+
+function activateTab(panelId, focusTab = false) {
+  const activeButton = tabButtons.find(button => button.dataset.tab === panelId);
+  if (!activeButton) return;
+  for (const button of tabButtons) {
+    const isActive = button === activeButton;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-selected", String(isActive));
+    button.tabIndex = isActive ? 0 : -1;
+  }
+  for (const panel of tabPanels) panel.hidden = panel.id !== panelId;
+  if (focusTab) activeButton.focus();
+}
+
+const tablist = document.querySelector("[role=tablist]");
+tablist.addEventListener("click", event => {
+  const button = event.target.closest("[role=tab]");
+  if (button) activateTab(button.dataset.tab);
+});
+tablist.addEventListener("keydown", event => {
+  const currentIndex = tabButtons.indexOf(document.activeElement);
+  if (currentIndex < 0) return;
+  let nextIndex = currentIndex;
+  if (event.key === "ArrowRight") nextIndex = (currentIndex + 1) % tabButtons.length;
+  else if (event.key === "ArrowLeft") nextIndex = (currentIndex - 1 + tabButtons.length) % tabButtons.length;
+  else if (event.key === "Home") nextIndex = 0;
+  else if (event.key === "End") nextIndex = tabButtons.length - 1;
+  else return;
+  event.preventDefault();
+  activateTab(tabButtons[nextIndex].dataset.tab, true);
+});
+form.addEventListener("click", event => {
+  const button = event.target.closest("[data-tab-target]");
+  if (button) activateTab(button.dataset.tabTarget, true);
+});
 
 function setInputValue(input, value) {
   input.value = value ?? "";
@@ -67,9 +104,12 @@ function render() {
   $("#summary-level").textContent = `Niveau de puissance ${character.campaign.powerLevel}`;
   $("#spent-points").textContent = result.costs.total;
   $("#remaining-points").textContent = result.remaining;
-  $("#remaining-label").textContent = result.remaining < 0 ? "Dépassement" : "Points restants";
+  $("#remaining-label").textContent = result.remaining < 0 ? "Dépassement" : "Disponibles";
   $("#budget-progress").style.width = `${progress}%`;
   $("#budget-progress").classList.toggle("over-budget", result.remaining < 0);
+  $("#budget-detail").textContent = character.campaign.startingPowerPoints === null
+    ? `Budget initial : ${result.budget} PP`
+    : "Budget personnalisé";
   $("#budget-hint").textContent = character.campaign.startingPowerPoints === null
     ? `Par défaut : ${character.campaign.powerLevel} × ${campaignRules.defaultPointsPerPowerLevel} = ${pointBudget(character, campaignRules)} PP.`
     : "Budget personnalisé pour cette campagne.";
@@ -88,7 +128,7 @@ function render() {
     .map(({ message, kind }) => `<li class="${kind}">${escapeHtml(message)}</li>`).join("");
   const hasIssues = result.issues.length > 0;
   $("#status-dot").classList.toggle("has-issues", hasIssues);
-  $("#validation-title").textContent = hasIssues ? `${result.issues.length} alerte${result.issues.length === 1 ? "" : "s"}` : "Fiche cohérente";
+  $("#validation-title").textContent = hasIssues ? `${result.issues.length} alerte${result.issues.length === 1 ? "" : "s"}` : "Aucune alerte";
 }
 
 function showToast(message) {
