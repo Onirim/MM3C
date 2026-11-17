@@ -49,7 +49,6 @@ export function validateCharacter(character, campaignRules, characteristics, def
   }
 
   const skillCap = level + skillRules.powerLevelCheckCapBonus;
-  let totalSkillRanks = 0;
   for (const skill of skillRules.skills) {
     const value = character.skills[skill.id];
     const rankEntries = skill.specialization
@@ -62,7 +61,6 @@ export function validateCharacter(character, campaignRules, characteristics, def
         issues.push(`${skill.label} : les rangs doivent être des entiers positifs ou nuls.`);
         continue;
       }
-      totalSkillRanks += rank;
       if (skill.specialization && rank > 0 && !entry.name.trim()) {
         issues.push(`Indiquez la spécialité de ${skill.label} avant d’y acheter des rangs.`);
       }
@@ -78,8 +76,6 @@ export function validateCharacter(character, campaignRules, characteristics, def
       }
     }
   }
-  if (totalSkillRanks % 2 !== 0) issues.push(`Les compétences totalisent ${totalSkillRanks} rang${totalSkillRanks === 1 ? "" : "s"} : ajoutez ou retirez un rang pour acheter des lots de 2.`);
-
   const costs = calculateCosts(character, characteristics, defenseRules, skillRules);
   const remaining = budget - costs.total;
   if (remaining < 0) issues.push(`Budget dépassé de ${Math.abs(remaining)} point${Math.abs(remaining) === 1 ? "" : "s"}.`);

@@ -183,8 +183,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .skill-specialization-name, .add-specialization input { width: 100%; min-width: 0; height: 34px; padding: 0 9px; border: 1px solid #dce3ed; border-radius: 6px; background: #fcfdff; color: var(--ink); font: 500 10px 'DM Sans', sans-serif; }
 .skill-specialization-name:focus, .add-specialization input:focus { border-color: #829cbb; outline: 0; box-shadow: 0 0 0 3px #6387b01a; }
 .empty-specializations { margin: 0; padding-top: 8px; border-top: 1px solid #e5eaf1; color: var(--quiet); font-size: 9px; }
-.add-specialization { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 7px; }
-.add-specialization .button { min-height: 34px; padding-inline: 10px; font-size: 10px; }
+.add-specialization { display: flex; align-items: center; gap: 7px; }
+.add-specialization input { flex: 1 1 auto; height: 36px; }
+.add-specialization .button { min-height: 36px; align-self: center; padding-inline: 10px; font-size: 10px; }
 .remove-specialization { width: 28px; height: 28px; border: 1px solid #eadbd6; border-radius: 6px; background: #fff9f7; color: #aa6255; font-size: 16px; cursor: pointer; }
 .remove-specialization:hover { background: #f9ece8; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
