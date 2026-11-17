@@ -16,8 +16,22 @@ let toastTimer;
 const $ = selector => document.querySelector(selector);
 const form = $("#character-form");
 const toast = $("#toast");
+const themeToggle = $("#theme-toggle");
 const tabButtons = [...document.querySelectorAll("[role=tab]")];
 const tabPanels = [...document.querySelectorAll("[role=tabpanel]")];
+
+function applyTheme(theme) {
+  const isDark = theme === "dark";
+  document.documentElement.dataset.theme = isDark ? "dark" : "light";
+  themeToggle.setAttribute("aria-pressed", String(isDark));
+  themeToggle.querySelector(".theme-symbol").textContent = isDark ? "☼" : "☾";
+  document.querySelector('meta[name="theme-color"]').content = isDark ? "#111815" : "#ffffff";
+}
+
+themeToggle.addEventListener("click", () => {
+  applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
+});
+applyTheme("light");
 
 function activateTab(panelId, focusTab = false) {
   const activeButton = tabButtons.find(button => button.dataset.tab === panelId);
