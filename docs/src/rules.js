@@ -5,11 +5,18 @@ export function pointBudget(character, campaignRules) {
     : Number(override);
 }
 
-export function calculateCosts(character, characteristics, defenses) {
+export function calculateCosts(character, characteristics, defenses, skillRules) {
   const traits = characteristics.reduce((sum, trait) => sum + Number(character.characteristics[trait.id] || 0) * trait.costPerRank, 0);
   const defenseBonuses = defenses.filter(defense => defense.buyable !== false)
     .reduce((sum, defense) => sum + Number(character.defenses[defense.id] || 0) * defense.costPerRank, 0);
-  return { characteristics: traits, defenses: defenseBonuses, total: traits + defenseBonuses };
+  const skillRanks = skillRules.skills.reduce((sum, skill) => {
+    const value = character.skills[skill.id];
+    return sum + (skill.specialization
+      ? value.specializations.reduce((subTotal, item) => subTotal + Number(item.ranks || 0), 0)
+      : Number(value.ranks || 0));
+  }, 0);
+  const skills = skillRanks / 2 * skillRules.costPerTwoRanks;
+  return { characteristics: traits, defenses: defenseBonuses, skills, skillRanks, total: traits + defenseBonuses + skills };
 }
 
 export function derivedDefenses(character, defenseRules) {
@@ -20,7 +27,7 @@ export function derivedDefenses(character, defenseRules) {
   }));
 }
 
-export function validateCharacter(character, campaignRules, characteristics, defenseRules, complicationRules) {
+export function validateCharacter(character, campaignRules, characteristics, defenseRules, skillRules, complicationRules) {
   const issues = [];
   const info = [];
   const level = Number(character.campaign.powerLevel);
@@ -41,7 +48,39 @@ export function validateCharacter(character, campaignRules, characteristics, def
     if (!Number.isInteger(rank) || rank < 0 || rank > 20) issues.push(`${defense.label} doit être un rang entier entre 0 et 20.`);
   }
 
-  const costs = calculateCosts(character, characteristics, defenseRules);
+  const skillCap = level + skillRules.powerLevelCheckCapBonus;
+  let totalSkillRanks = 0;
+  for (const skill of skillRules.skills) {
+    const value = character.skills[skill.id];
+    const rankEntries = skill.specialization
+      ? value.specializations.map(item => ({ ranks: item.ranks, name: item.name }))
+      : [{ ranks: value.ranks, name: skill.label }];
+    const seenSpecializations = new Set();
+    for (const entry of rankEntries) {
+      const rank = Number(entry.ranks);
+      if (!Number.isInteger(rank) || rank < 0) {
+        issues.push(`${skill.label} : les rangs doivent être des entiers positifs ou nuls.`);
+        continue;
+      }
+      totalSkillRanks += rank;
+      if (skill.specialization && rank > 0 && !entry.name.trim()) {
+        issues.push(`Indiquez la spécialité de ${skill.label} avant d’y acheter des rangs.`);
+      }
+      if (skill.specialization && entry.name.trim()) {
+        const key = entry.name.trim().toLocaleLowerCase();
+        if (seenSpecializations.has(key)) issues.push(`${skill.label} contient deux fois la spécialité « ${entry.name.trim()} ».`);
+        seenSpecializations.add(key);
+      }
+      const characteristic = Number(character.characteristics[skill.baseFrom] || 0);
+      const checkBonus = characteristic + rank;
+      if ((rank > 0 || !skill.specialization || skill.untrained) && checkBonus > skillCap) {
+        issues.push(`${skill.label}${skill.specialization ? ` (${entry.name.trim() || "spécialité à préciser"})` : ""} atteint +${checkBonus}, au-dessus de la limite de +${skillCap} du NP ${level}.`);
+      }
+    }
+  }
+  if (totalSkillRanks % 2 !== 0) issues.push(`Les compétences totalisent ${totalSkillRanks} rang${totalSkillRanks === 1 ? "" : "s"} : ajoutez ou retirez un rang pour acheter des lots de 2.`);
+
+  const costs = calculateCosts(character, characteristics, defenseRules, skillRules);
   const remaining = budget - costs.total;
   if (remaining < 0) issues.push(`Budget dépassé de ${Math.abs(remaining)} point${Math.abs(remaining) === 1 ? "" : "s"}.`);
   const defenses = derivedDefenses(character, defenseRules);
@@ -61,6 +100,7 @@ export function validateCharacter(character, campaignRules, characteristics, def
   if (character.complications.some(item => !item.description.trim())) {
     issues.push("Renseignez la description de chaque complication.");
   }
-  info.push("Les limites Attaque + Effet et Compétence seront calculées dans les étapes correspondantes.");
+  info.push("La limite de niveau de puissance des tests de compétence est contrôlée ici.");
+  info.push("Les limites Attaque + Effet seront calculées dans l’étape des pouvoirs.");
   return { issues, info, costs, budget, remaining, defenses };
 }

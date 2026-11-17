@@ -2,15 +2,15 @@ import { createCharacter, getPath, normalizeCharacter, setPath } from "./state.j
 import { pointBudget, validateCharacter } from "./rules.js";
 import { downloadCharacter, readCharacterFile } from "./serialization.js";
 
-const [campaignRules, characteristics, defenseRules, complicationRules] = await Promise.all([
-  "campaign.json", "characteristics.json", "defenses.json", "complications.json"
+const [campaignRules, characteristics, defenseRules, skillRules, complicationRules] = await Promise.all([
+  "campaign.json", "characteristics.json", "defenses.json", "skills.json", "complications.json"
 ].map(async file => {
   const response = await fetch(`./data/${file}`);
   if (!response.ok) throw new Error(`Impossible de charger ${file}.`);
   return response.json();
 }));
 
-let character = createCharacter(campaignRules);
+let character = createCharacter(campaignRules, skillRules);
 let toastTimer;
 
 const $ = selector => document.querySelector(selector);
@@ -68,6 +68,29 @@ form.addEventListener("click", event => {
   if (button) activateTab(button.dataset.tabTarget, true);
 });
 form.addEventListener("click", event => {
+  const addButton = event.target.closest("[data-add-specialization]");
+  if (addButton) {
+    const skillId = addButton.dataset.addSpecialization;
+    const field = form.querySelector(`[data-new-specialization="${skillId}"]`);
+    const name = field?.value.trim();
+    if (!name) {
+      field?.focus();
+      return;
+    }
+    character.skills[skillId].specializations.push({ id: crypto.randomUUID(), name, ranks: 0 });
+    renderSkills();
+    render();
+    return;
+  }
+  const removeButton = event.target.closest("[data-remove-specialization]");
+  if (removeButton) {
+    const { removeSpecialization: skillId, specializationId } = removeButton.dataset;
+    character.skills[skillId].specializations = character.skills[skillId].specializations.filter(item => item.id !== specializationId);
+    renderSkills();
+    render();
+  }
+});
+form.addEventListener("click", event => {
   const button = event.target.closest("[data-step], [data-rank-step]");
   if (!button) return;
   const input = button.closest(".number-stepper, .rank-stepper")?.querySelector('input[type="number"]');
@@ -91,6 +114,7 @@ function syncForm() {
   for (const input of form.querySelectorAll("[data-path]")) setInputValue(input, getPath(character, input.dataset.path));
   renderCharacteristics();
   renderDefenses();
+  renderSkills();
   renderComplications();
   render();
 }
@@ -120,6 +144,44 @@ function renderDefenses() {
   }).join("");
 }
 
+function renderSkills() {
+  $("#skill-fields").innerHTML = skillRules.categories.map(category => {
+    const cards = skillRules.skills.filter(skill => skill.category === category.id).map(skill => {
+      const value = character.skills[skill.id];
+      const flags = [
+        skill.untrained ? "Sans qualification possible" : "Qualification requise",
+        skill.interaction ? "Interaction" : "",
+        skill.manipulation ? "Manipulation" : "",
+        skill.tools ? "Outils requis" : ""
+      ].filter(Boolean).map(flag => `<span>${flag}</span>`).join("");
+      const stat = characteristics.find(trait => trait.id === skill.baseFrom);
+      const specializationContent = skill.specialization
+        ? `<div class="skill-specialization-label">Spécialités · ${skill.specialization.label}</div><div class="skill-specialization-list">${value.specializations.length
+          ? value.specializations.map(item => `<div class="skill-specialization-row">
+              <label class="visually-hidden" for="skill-${skill.id}-${item.id}">Spécialité ${skill.label}</label>
+              <input id="skill-${skill.id}-${item.id}" class="skill-specialization-name" type="text" value="${escapeHtml(item.name)}" placeholder="${escapeHtml(skill.specialization.placeholder)}" data-skill-specialization-name="${skill.id}" data-specialization-id="${item.id}">
+              <span class="skill-bonus">Test <strong data-skill-bonus="${skill.id}" data-specialization-id="${item.id}">+0</strong></span>
+              <span class="rank-stepper skill-stepper"><button class="rank-stepper-button" type="button" data-rank-step="-1" aria-label="Diminuer ${skill.label} ${escapeHtml(item.name)} d’un rang">−</button><input type="number" min="0" step="1" value="${item.ranks}" data-skill-rank="${skill.id}" data-specialization-id="${item.id}" aria-label="Rangs de ${skill.label} ${escapeHtml(item.name)}"><button class="rank-stepper-button" type="button" data-rank-step="1" aria-label="Augmenter ${skill.label} ${escapeHtml(item.name)} d’un rang">+</button></span>
+              <span class="trait-cost" data-skill-cost="${skill.id}" data-specialization-id="${item.id}">0 PP</span>
+              <button class="remove-specialization" type="button" data-remove-specialization="${skill.id}" data-specialization-id="${item.id}" aria-label="Supprimer cette spécialité">×</button>
+            </div>`).join("")
+          : `<p class="empty-specializations">Aucune spécialité achetée pour le moment.</p>`}</div>
+          <div class="add-specialization"><input type="text" placeholder="${escapeHtml(skill.specialization.placeholder)}" aria-label="Nouvelle spécialité de ${skill.label}" data-new-specialization="${skill.id}"><button class="button button-secondary" type="button" data-add-specialization="${skill.id}">Ajouter</button></div>`
+        : `<div class="skill-purchase-row">
+            <span class="skill-bonus">Test <strong data-skill-bonus="${skill.id}">+0</strong></span>
+            <span class="rank-stepper skill-stepper"><button class="rank-stepper-button" type="button" data-rank-step="-1" aria-label="Diminuer ${skill.label} d’un rang">−</button><input type="number" min="0" step="1" value="${value.ranks}" data-skill-rank="${skill.id}" aria-label="Rangs de ${skill.label}"><button class="rank-stepper-button" type="button" data-rank-step="1" aria-label="Augmenter ${skill.label} d’un rang">+</button></span>
+            <span class="trait-cost" data-skill-cost="${skill.id}">0 PP</span>
+          </div>`;
+      return `<article class="skill-card">
+        <div class="skill-card-heading"><div><h3>${skill.label} <small>${skill.shortLabel}</small></h3><p>${skill.description}</p></div><span class="skill-ability">${stat.shortLabel}</span></div>
+        <div class="skill-flags">${flags}<span>Action : ${skill.action}</span></div>
+        ${specializationContent}
+      </article>`;
+    }).join("");
+    return `<section class="skill-category"><h3 class="skill-category-title">${category.label}</h3><div class="skill-grid">${cards}</div></section>`;
+  }).join("");
+}
+
 function renderComplications() {
   const list = $("#complication-list");
   list.innerHTML = character.complications.map(item => `
@@ -135,13 +197,13 @@ function escapeHtml(value) {
 }
 
 function render() {
-  const result = validateCharacter(character, campaignRules, characteristics, defenseRules, complicationRules);
+  const result = validateCharacter(character, campaignRules, characteristics, defenseRules, skillRules, complicationRules);
   const maxBudget = Math.max(0, result.budget);
   const progress = maxBudget ? Math.max(0, Math.min(100, result.costs.total / maxBudget * 100)) : 0;
   $("#summary-name").textContent = character.identity.heroName.trim() || "Nouveau héros";
   $("#summary-level").textContent = `Niveau de puissance ${character.campaign.powerLevel}`;
-  $("#spent-points").textContent = result.costs.total;
-  $("#remaining-points").textContent = result.remaining;
+  $("#spent-points").textContent = formatPoints(result.costs.total);
+  $("#remaining-points").textContent = formatPoints(result.remaining);
   $("#remaining-label").textContent = result.remaining < 0 ? "Dépassement" : "Disponibles";
   $("#budget-progress").style.width = `${progress}%`;
   $("#budget-progress").classList.toggle("over-budget", result.remaining < 0);
@@ -154,13 +216,27 @@ function render() {
     ? `Valeur standard : ${character.campaign.powerLevel} × ${campaignRules.defaultPointsPerPowerLevel} PP. Laissez vide pour la conserver.`
     : "Budget personnalisé pour cette campagne.";
   $("#cost-breakdown").innerHTML = [
-    ["Caractéristiques", result.costs.characteristics], ["Défenses achetées", result.costs.defenses]
-  ].map(([label, cost]) => `<div class="breakdown-line"><span>${label}</span><strong>${cost} PP</strong></div>`).join("");
+    ["Caractéristiques", result.costs.characteristics], ["Défenses achetées", result.costs.defenses], ["Compétences", result.costs.skills]
+  ].map(([label, cost]) => `<div class="breakdown-line"><span>${label}</span><strong>${formatPoints(cost)} PP</strong></div>`).join("");
   for (const defense of defenseRules) {
     $(`[data-defense-total="${defense.id}"]`).textContent = result.defenses[defense.id];
   }
   for (const trait of characteristics) $( `[data-cost="characteristics.${trait.id}"]`).textContent = `${Number(character.characteristics[trait.id]) * trait.costPerRank} PP`;
   for (const defense of defenseRules.filter(item => item.buyable !== false)) $( `[data-cost="defenses.${defense.id}"]`).textContent = `${Number(character.defenses[defense.id]) * defense.costPerRank} PP`;
+  for (const skill of skillRules.skills) {
+    const value = character.skills[skill.id];
+    const ranks = skill.specialization ? value.specializations : [{ id: null, ranks: value.ranks }];
+    for (const item of ranks) {
+      const bonus = Number(character.characteristics[skill.baseFrom] || 0) + Number(item.ranks || 0);
+      const cost = Number(item.ranks || 0) / 2 * skillRules.costPerTwoRanks;
+      const bonusElement = document.querySelector(`[data-skill-bonus="${skill.id}"]${item.id ? `[data-specialization-id="${item.id}"]` : ":not([data-specialization-id])"}`);
+      const costElement = document.querySelector(`[data-skill-cost="${skill.id}"]${item.id ? `[data-specialization-id="${item.id}"]` : ":not([data-specialization-id])"}`);
+      if (bonusElement) bonusElement.textContent = `${bonus >= 0 ? "+" : ""}${bonus}`;
+      if (costElement) costElement.textContent = `${formatPoints(cost)} PP`;
+    }
+    const maxRanks = Math.max(0, Number(character.campaign.powerLevel) + skillRules.powerLevelCheckCapBonus - Number(character.characteristics[skill.baseFrom] || 0));
+    document.querySelectorAll(`[data-skill-rank="${skill.id}"]`).forEach(input => { input.max = String(maxRanks); });
+  }
 
   const list = $("#validation-list");
   list.innerHTML = [...result.issues.map(message => ({ message, kind: "issue" })), ...result.info.map(message => ({ message, kind: "info" }))]
@@ -169,6 +245,10 @@ function render() {
   $("#status-dot").classList.toggle("has-issues", hasIssues);
   $("#validation-title").textContent = hasIssues ? `${result.issues.length} alerte${result.issues.length === 1 ? "" : "s"}` : "Aucune alerte";
   syncStepperButtons();
+}
+
+function formatPoints(points) {
+  return new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 1 }).format(points);
 }
 
 function showToast(message) {
@@ -206,6 +286,11 @@ form.addEventListener("input", event => {
     const [group, id] = input.dataset.rank.split(".");
     character[group][id] = input.value === "" ? 0 : Number(input.value);
     render();
+  } else if (input.dataset.skillRank) {
+    updateSkillRank(input);
+    render();
+  } else if (input.dataset.skillSpecializationName) {
+    updateSpecializationName(input);
   }
 });
 
@@ -218,8 +303,30 @@ form.addEventListener("change", event => {
     const [group, id] = input.dataset.rank.split(".");
     character[group][id] = input.value === "" ? 0 : Number(input.value);
     render();
+  } else if (input.dataset.skillRank) {
+    updateSkillRank(input);
+    render();
+  } else if (input.dataset.skillSpecializationName) {
+    updateSpecializationName(input);
   }
 });
+
+function updateSkillRank(input) {
+  const skill = character.skills[input.dataset.skillRank];
+  if (input.dataset.specializationId) {
+    const specialization = skill.specializations.find(item => item.id === input.dataset.specializationId);
+    if (specialization) specialization.ranks = input.value === "" ? 0 : Number(input.value);
+  } else {
+    skill.ranks = input.value === "" ? 0 : Number(input.value);
+  }
+}
+
+function updateSpecializationName(input) {
+  const specialization = character.skills[input.dataset.skillSpecializationName].specializations
+    .find(item => item.id === input.dataset.specializationId);
+  if (specialization) specialization.name = input.value;
+  render();
+}
 
 $("#complication-list").addEventListener("input", event => {
   const id = event.target.dataset.complicationDescription;
@@ -263,7 +370,7 @@ $("#import-file").addEventListener("change", async event => {
   const file = event.target.files?.[0];
   if (!file) return;
   try {
-    character = normalizeCharacter(await readCharacterFile(file), campaignRules, complicationRules);
+    character = normalizeCharacter(await readCharacterFile(file), campaignRules, complicationRules, skillRules);
     syncForm();
     showToast("Personnage importé.");
   } catch (error) {

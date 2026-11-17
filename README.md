@@ -13,6 +13,6 @@ Pour prévisualiser le site localement, démarrez un serveur statique à la raci
 - `docs/index.html` : page unique et étapes de création.
 - `docs/styles.css` : mise en page responsive.
 - `docs/src/` : état du personnage, règles, validations et sérialisation JSON.
-- `docs/data/` : catalogue de caractéristiques, défenses, complications et paramètres de campagne.
+- `docs/data/` : catalogues de caractéristiques, défenses, compétences, complications et paramètres de campagne.
 
 MM3C ne sauvegarde pas le personnage dans le navigateur. Utilisez **Exporter le personnage** pour créer un fichier `.mm3c.json`, puis **Importer** pour le restaurer.

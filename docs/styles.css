@@ -2,6 +2,7 @@
 
 :root {
   color-scheme: light;
+  --font-size-min: 8px;
   --ink: #2c3545;
   --muted: #667286;
   --quiet: #8791a0;
@@ -81,7 +82,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .overview-budget, .overview-validation { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
 .overview-budget { padding: 14px 17px 11px; }
 .overview-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.overview-title .eyebrow { font-size: 8px; }
+.overview-title .eyebrow { font-size: var(--font-size-min); }
 .overview-title p { margin: 0; color: #647187; font-size: 10px; font-weight: 600; }
 .overview-numbers { display: flex; gap: 27px; margin-top: 9px; }
 .overview-stat { display: flex; align-items: baseline; gap: 9px; }
@@ -150,7 +151,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .trait-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
 .trait-card { min-width: 0; display: flex; flex-direction: column; justify-content: space-between; gap: 12px; padding: 13px; border: 1px solid #e3e8f0; border-radius: 8px; background: var(--surface-soft); }
 .trait-name { display: flex; align-items: baseline; gap: 7px; color: #344b69; font-size: 11px; font-weight: 700; }
-.trait-name small { color: #929daf; font: 700 8px 'Manrope', sans-serif; letter-spacing: .08em; }
+.trait-name small { color: #929daf; font: 700 var(--font-size-min) 'Manrope', sans-serif; letter-spacing: .08em; }
 .trait-description { display: block; margin-top: 5px; color: var(--quiet); font-size: 9px; line-height: 1.4; }
 .trait-control { display: flex; align-items: center; justify-content: space-between; gap: 7px; }
 .trait-control input { width: 73px; padding: 8px; text-align: center; background: #fff; }
@@ -160,6 +161,33 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .defense-total small { color: #74849b; font-size: 9px; }
 .defense-total strong { color: #3f628d; font: 700 17px 'Manrope', sans-serif; }
 .defense-source-note { max-width: 180px; color: var(--quiet); font-size: 9px; line-height: 1.45; text-align: right; }
+
+.skill-catalog { display: grid; gap: 22px; }
+.skill-category-title { margin: 0 0 10px; color: var(--green-deep); font: 700 14px 'Manrope', sans-serif; }
+.skill-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.skill-card { min-width: 0; display: grid; align-content: start; gap: 11px; padding: 14px; border: 1px solid #e1e7f0; border-radius: 9px; background: var(--surface-soft); }
+.skill-card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.skill-card-heading h3 { margin: 0; color: #344b69; font: 700 12px 'Manrope', sans-serif; }
+.skill-card-heading h3 small { margin-left: 4px; color: #929daf; font: 700 8px 'Manrope', sans-serif; letter-spacing: .07em; }
+.skill-card-heading p { margin: 5px 0 0; color: var(--quiet); font-size: 10px; line-height: 1.45; }
+.skill-ability { flex: 0 0 auto; padding: 5px 7px; border: 1px solid #d9e4f1; border-radius: 6px; background: #f1f6fc; color: #557398; font: 700 9px 'Manrope', sans-serif; }
+.skill-flags { display: flex; flex-wrap: wrap; gap: 5px; }
+.skill-flags span { padding: 4px 6px; border-radius: 5px; background: #edf1f6; color: #68778d; font-size: 8px; }
+.skill-purchase-row { display: flex; align-items: center; gap: 9px; padding-top: 9px; border-top: 1px solid #e5eaf1; }
+.skill-bonus { margin-right: auto; color: var(--muted); font-size: 9px; white-space: nowrap; }
+.skill-bonus strong { margin-left: 4px; color: #3f628d; font: 700 13px 'Manrope', sans-serif; }
+.skill-stepper { flex: 0 0 auto; }
+.skill-specialization-list { display: grid; gap: 7px; }
+.skill-specialization-label { color: var(--muted); font-size: 9px; font-weight: 700; }
+.skill-specialization-row { min-width: 0; display: grid; grid-template-columns: minmax(85px, 1fr) auto auto auto 28px; align-items: center; gap: 6px; padding-top: 8px; border-top: 1px solid #e5eaf1; }
+.skill-specialization-name, .add-specialization input { width: 100%; min-width: 0; height: 34px; padding: 0 9px; border: 1px solid #dce3ed; border-radius: 6px; background: #fcfdff; color: var(--ink); font: 500 10px 'DM Sans', sans-serif; }
+.skill-specialization-name:focus, .add-specialization input:focus { border-color: #829cbb; outline: 0; box-shadow: 0 0 0 3px #6387b01a; }
+.empty-specializations { margin: 0; padding-top: 8px; border-top: 1px solid #e5eaf1; color: var(--quiet); font-size: 9px; }
+.add-specialization { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 7px; }
+.add-specialization .button { min-height: 34px; padding-inline: 10px; font-size: 10px; }
+.remove-specialization { width: 28px; height: 28px; border: 1px solid #eadbd6; border-radius: 6px; background: #fff9f7; color: #aa6255; font-size: 16px; cursor: pointer; }
+.remove-specialization:hover { background: #f9ece8; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
 
 .complication-list { display: grid; gap: 10px; }
 .complication-row { display: grid; grid-template-columns: minmax(145px, .27fr) minmax(0, 1fr) 36px; align-items: start; gap: 10px; padding: 11px; border: 1px solid #e3e9e4; border-radius: 8px; background: var(--surface-soft); }
@@ -266,6 +294,19 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 :root[data-theme="dark"] .defense-total { border-color: #3a4d68; background: #26354a; }
 :root[data-theme="dark"] .defense-total small { color: #aab8ca; }
 :root[data-theme="dark"] .defense-total strong { color: #d5e5f8; }
+:root[data-theme="dark"] .skill-category-title { color: #d8e3f2; }
+:root[data-theme="dark"] .skill-card { border-color: #35435a; background: #202a39; }
+:root[data-theme="dark"] .skill-card-heading h3 { color: #d5e1f0; }
+:root[data-theme="dark"] .skill-card-heading h3 small { color: #9aa9bd; }
+:root[data-theme="dark"] .skill-card-heading p { color: #9aa9bd; }
+:root[data-theme="dark"] .skill-ability { border-color: #3a4d68; background: #26354a; color: #c4d6ef; }
+:root[data-theme="dark"] .skill-flags span { background: #29364a; color: #aab8ca; }
+:root[data-theme="dark"] .skill-purchase-row, :root[data-theme="dark"] .skill-specialization-row, :root[data-theme="dark"] .empty-specializations { border-top-color: #35435a; }
+:root[data-theme="dark"] .skill-specialization-label { color: #aab8ca; }
+:root[data-theme="dark"] .skill-bonus strong { color: #d5e5f8; }
+:root[data-theme="dark"] .skill-specialization-name, :root[data-theme="dark"] .add-specialization input { border-color: #3b4b62; background: #141c29; color: #e1e8f1; }
+:root[data-theme="dark"] .remove-specialization { border-color: #583e38; background: #332522; color: #e3a196; }
+:root[data-theme="dark"] .remove-specialization:hover { background: #432d28; }
 :root[data-theme="dark"] .remove-complication { border-color: #583e38; background: #332522; color: #e3a196; }
 :root[data-theme="dark"] .remove-complication:hover { background: #432d28; }
 :root[data-theme="dark"] .panel-navigation { border-top-color: #303e53; }
@@ -310,6 +351,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .two-columns, .three-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .full-width { grid-column: 1 / -1; }
   .trait-card { padding: 10px; }
+  .skill-grid { grid-template-columns: 1fr; }
+  .skill-specialization-row { grid-template-columns: minmax(0, 1fr) auto auto auto; }
   .rank-stepper { grid-template-columns: 24px 38px 24px; }
   .rank-stepper input { width: 38px; }
   .rank-stepper-button { width: 24px; }

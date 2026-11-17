@@ -1,0 +1,30 @@
+{
+  "costPerTwoRanks": 1,
+  "powerLevelCheckCapBonus": 10,
+  "categories": [
+    { "id": "physical", "label": "Aptitudes physiques" },
+    { "id": "combat", "label": "Combat" },
+    { "id": "social", "label": "Interaction sociale" },
+    { "id": "knowledge", "label": "Connaissances et perception" },
+    { "id": "technical", "label": "Technique" },
+    { "id": "mobility", "label": "Déplacement" }
+  ],
+  "skills": [
+    { "id": "acrobatics", "label": "Acrobaties", "shortLabel": "ACO", "category": "physical", "baseFrom": "agility", "untrained": false, "action": "Mouvement ou libre", "description": "Manœuvres acrobatiques et maintien de l’équilibre.", "specialization": null },
+    { "id": "athletics", "label": "Athlétisme", "shortLabel": "ATH", "category": "physical", "baseFrom": "strength", "untrained": true, "action": "Mouvement", "description": "Escalade, course, saut et natation.", "specialization": null },
+    { "id": "closeCombat", "label": "Combat au contact", "shortLabel": "CAC", "category": "combat", "baseFrom": "fighting", "untrained": true, "action": "Simple", "description": "Bonus d’attaque avec une arme, un pouvoir ou un style précis.", "specialization": { "label": "Attaque ou style", "placeholder": "Ex. Épées, mains nues" } },
+    { "id": "rangedCombat", "label": "Combat à distance", "shortLabel": "CAD", "category": "combat", "baseFrom": "dexterity", "untrained": true, "action": "Simple", "description": "Bonus d’attaque à distance avec une arme ou un pouvoir précis.", "specialization": { "label": "Attaque", "placeholder": "Ex. Armes à feu, contrôle des flammes" } },
+    { "id": "deception", "label": "Duperie", "shortLabel": "DUP", "category": "social", "baseFrom": "presence", "untrained": true, "interaction": true, "action": "Simple", "description": "Bluff, mensonge, déguisement et diversion.", "specialization": null },
+    { "id": "expertise", "label": "Expertise", "shortLabel": "EXP", "category": "knowledge", "baseFrom": "intellect", "untrained": false, "action": "Selon la tâche", "description": "Connaissances et pratique d’un domaine professionnel ou savant.", "specialization": { "label": "Domaine", "placeholder": "Ex. Droit, journalisme, science" } },
+    { "id": "insight", "label": "Perspicacité", "shortLabel": "PERSP", "category": "social", "baseFrom": "awareness", "untrained": true, "action": "Libre", "description": "Évaluer les intentions et déceler les tromperies.", "specialization": null },
+    { "id": "intimidation", "label": "Intimidation", "shortLabel": "INTI", "category": "social", "baseFrom": "presence", "untrained": true, "interaction": true, "action": "Simple", "description": "Influencer autrui par la menace ou la force de caractère.", "specialization": null },
+    { "id": "investigation", "label": "Investigation", "shortLabel": "INV", "category": "knowledge", "baseFrom": "intellect", "untrained": false, "action": "Selon la tâche", "description": "Rechercher et analyser des indices.", "specialization": null },
+    { "id": "perception", "label": "Perception", "shortLabel": "PER", "category": "knowledge", "baseFrom": "awareness", "untrained": true, "action": "Libre", "description": "Repérer les détails et changements dans l’environnement.", "specialization": null },
+    { "id": "persuasion", "label": "Persuasion", "shortLabel": "PERS", "category": "social", "baseFrom": "presence", "untrained": true, "interaction": true, "action": "Selon la tâche", "description": "Négocier, convaincre et influencer par le dialogue.", "specialization": null },
+    { "id": "sleightOfHand", "label": "Habileté", "shortLabel": "HAB", "category": "physical", "baseFrom": "dexterity", "untrained": false, "manipulation": true, "action": "Simple", "description": "Gestes précis, subtils ou rapides avec les mains.", "specialization": null },
+    { "id": "stealth", "label": "Discrétion", "shortLabel": "DIS", "category": "physical", "baseFrom": "agility", "untrained": true, "action": "Mouvement", "description": "Se déplacer sans être remarqué ou suivre quelqu’un.", "specialization": null },
+    { "id": "technology", "label": "Technologie", "shortLabel": "TECH", "category": "technical", "baseFrom": "intellect", "untrained": false, "manipulation": true, "tools": true, "action": "Simple", "description": "Utiliser, réparer et concevoir des appareils technologiques.", "specialization": null },
+    { "id": "treatment", "label": "Soins médicaux", "shortLabel": "SOINS", "category": "technical", "baseFrom": "intellect", "untrained": false, "manipulation": true, "tools": true, "action": "Simple", "description": "Diagnostiquer et soigner les blessures et maladies.", "specialization": null },
+    { "id": "vehicles", "label": "Véhicules", "shortLabel": "VEH", "category": "mobility", "baseFrom": "dexterity", "untrained": false, "action": "Mouvement", "description": "Piloter ou manœuvrer des véhicules.", "specialization": null }
+  ]
+}
