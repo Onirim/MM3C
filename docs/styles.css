@@ -126,6 +126,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .number-stepper { width: min(100%, 220px); min-height: 44px; display: grid; grid-template-columns: 36px minmax(50px, 1fr) 36px; align-items: center; gap: 3px; padding: 3px; border: 1px solid #d8e1ed; border-radius: 8px; background: #f7f9fc; transition: border-color .15s, box-shadow .15s; }
 .number-stepper:focus-within { border-color: #829cbb; box-shadow: 0 0 0 3px #6387b01a; }
 .number-stepper input { width: 100%; min-width: 0; height: 35px; padding: 0 4px; border: 0; border-radius: 5px; background: transparent; color: var(--green-deep); font: 700 17px 'Manrope', sans-serif; text-align: center; outline: 0; box-shadow: none; }
+.number-stepper input::placeholder { color: #8794a7; opacity: 1; font: 600 13px 'Manrope', sans-serif; }
 .number-stepper input:focus { border: 0; outline: 0; box-shadow: none; }
 .number-stepper input::-webkit-inner-spin-button, .number-stepper input::-webkit-outer-spin-button { margin: 0; appearance: none; }
 .number-stepper input[type="number"] { appearance: textfield; -moz-appearance: textfield; }
@@ -154,9 +155,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .trait-control { display: flex; align-items: center; justify-content: space-between; gap: 7px; }
 .trait-control input { width: 73px; padding: 8px; text-align: center; background: #fff; }
 .trait-cost { color: #a8762f; font: 700 9px 'Manrope', sans-serif; }
-.defense-summary { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
-.defense-chip { padding: 7px 10px; border: 1px solid #dfe6f0; border-radius: 6px; background: #f5f8fc; color: #637188; font-size: 10px; }
-.defense-chip strong { margin-left: 6px; color: var(--green-deep); font: 700 12px 'Manrope', sans-serif; }
+.defense-card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.defense-total { min-width: 56px; display: inline-flex; align-items: baseline; justify-content: center; gap: 6px; padding: 7px 9px; border: 1px solid #d9e4f1; border-radius: 7px; background: #f1f6fc; }
+.defense-total small { color: #74849b; font-size: 9px; }
+.defense-total strong { color: #3f628d; font: 700 17px 'Manrope', sans-serif; }
+.defense-source-note { max-width: 180px; color: var(--quiet); font-size: 9px; line-height: 1.45; text-align: right; }
 
 .complication-list { display: grid; gap: 10px; }
 .complication-row { display: grid; grid-template-columns: minmax(145px, .27fr) minmax(0, 1fr) 36px; align-items: start; gap: 10px; padding: 11px; border: 1px solid #e3e9e4; border-radius: 8px; background: var(--surface-soft); }
@@ -239,6 +242,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 :root[data-theme="dark"] .number-stepper { border-color: #3b4b62; background: #141c29; }
 :root[data-theme="dark"] .number-stepper:focus-within { border-color: #7798c0; box-shadow: 0 0 0 3px #7798c02b; }
 :root[data-theme="dark"] .number-stepper input { border: 0; background: transparent; color: #e1e8f1; }
+:root[data-theme="dark"] .number-stepper input::placeholder { color: #8291a7; }
 :root[data-theme="dark"] .number-stepper input:focus { border: 0; background: transparent; box-shadow: none; }
 :root[data-theme="dark"] .stepper-button { background: #2a3a50; color: #cad8ec; }
 :root[data-theme="dark"] .stepper-button:hover:not(:disabled) { background: #39516e; color: #f0f4fa; }
@@ -259,8 +263,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 :root[data-theme="dark"] .trait-name { color: #d5e1f0; }
 :root[data-theme="dark"] .trait-name small, :root[data-theme="dark"] .trait-description { color: #9aa9bd; }
 :root[data-theme="dark"] .trait-cost { color: #e0b763; }
-:root[data-theme="dark"] .defense-chip { border-color: #3a4b64; background: #243248; color: #b5c4d8; }
-:root[data-theme="dark"] .defense-chip strong { color: #dbe6f4; }
+:root[data-theme="dark"] .defense-total { border-color: #3a4d68; background: #26354a; }
+:root[data-theme="dark"] .defense-total small { color: #aab8ca; }
+:root[data-theme="dark"] .defense-total strong { color: #d5e5f8; }
 :root[data-theme="dark"] .remove-complication { border-color: #583e38; background: #332522; color: #e3a196; }
 :root[data-theme="dark"] .remove-complication:hover { background: #432d28; }
 :root[data-theme="dark"] .panel-navigation { border-top-color: #303e53; }

@@ -7,19 +7,16 @@ export function pointBudget(character, campaignRules) {
 
 export function calculateCosts(character, characteristics, defenses) {
   const traits = characteristics.reduce((sum, trait) => sum + Number(character.characteristics[trait.id] || 0) * trait.costPerRank, 0);
-  const defenseBonuses = defenses.filter(defense => defense.id !== "protection")
+  const defenseBonuses = defenses.filter(defense => defense.buyable !== false)
     .reduce((sum, defense) => sum + Number(character.defenses[defense.id] || 0) * defense.costPerRank, 0);
-  const protection = Number(character.defenses.protection || 0) * defenses.find(defense => defense.id === "protection").costPerRank;
-  return { characteristics: traits, defenses: defenseBonuses, protection, total: traits + defenseBonuses + protection };
+  return { characteristics: traits, defenses: defenseBonuses, total: traits + defenseBonuses };
 }
 
 export function derivedDefenses(character, defenseRules) {
   return Object.fromEntries(defenseRules.map(defense => {
     const base = Number(character.characteristics[defense.baseFrom] || 0);
-    const purchased = defense.id === "protection"
-      ? Number(character.defenses.protection || 0)
-      : Number(character.defenses[defense.id] || 0);
-    return [defense.id === "protection" ? "toughness" : defense.id, base + purchased];
+    const purchased = defense.buyable === false ? 0 : Number(character.defenses[defense.id] || 0);
+    return [defense.id, base + purchased];
   }));
 }
 
@@ -39,6 +36,7 @@ export function validateCharacter(character, campaignRules, characteristics, def
     if (!Number.isInteger(rank) || rank < trait.minRank || rank > trait.maxRank) issues.push(`${trait.label} doit être un rang entier entre ${trait.minRank} et ${trait.maxRank}.`);
   }
   for (const defense of defenseRules) {
+    if (defense.buyable === false) continue;
     const rank = Number(character.defenses[defense.id]);
     if (!Number.isInteger(rank) || rank < 0 || rank > 20) issues.push(`${defense.label} doit être un rang entier entre 0 et 20.`);
   }

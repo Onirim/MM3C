@@ -13,7 +13,7 @@ export function createCharacter(campaignRules) {
       appearance: "", background: ""
     },
     characteristics: Object.fromEntries(["strength", "stamina", "dexterity", "agility", "fighting", "intellect", "awareness", "presence"].map(id => [id, 0])),
-    defenses: { dodge: 0, parry: 0, fortitude: 0, will: 0, protection: 0 },
+    defenses: { dodge: 0, parry: 0, fortitude: 0, will: 0 },
     complications: [
       { id: crypto.randomUUID(), type: "motivation", description: "" },
       { id: crypto.randomUUID(), type: "other", description: "" }
@@ -30,6 +30,7 @@ export function normalizeCharacter(input, campaignRules, complicationRules) {
   output.identity = { ...fresh.identity, ...(input.identity ?? {}) };
   output.characteristics = { ...fresh.characteristics, ...(input.characteristics ?? {}) };
   output.defenses = { ...fresh.defenses, ...(input.defenses ?? {}) };
+  delete output.defenses.protection;
   if (!Array.isArray(input.complications)) throw new Error("La liste des complications est absente ou invalide.");
   const validTypes = new Set(complicationRules.types.map(type => type.id));
   output.complications = input.complications.map(item => ({

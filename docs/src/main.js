@@ -104,11 +104,20 @@ function renderCharacteristics() {
 }
 
 function renderDefenses() {
-  $("#defense-fields").innerHTML = defenseRules.map(defense => `
-    <div class="trait-card">
-      <span><span class="trait-name">${defense.id === "protection" ? "Protection" : defense.label} <small>${defense.shortLabel}</small></span><span class="trait-description">${defense.id === "protection" ? "Rangs de l’effet Protection" : `Base : ${characteristics.find(trait => trait.id === defense.baseFrom).label}`}</span></span>
-      <span class="trait-control"><span class="rank-stepper"><button class="rank-stepper-button" type="button" data-rank-step="-1" aria-label="Diminuer ${defense.label} d’un rang">−</button><input type="number" min="0" max="20" step="1" value="${character.defenses[defense.id]}" data-rank="defenses.${defense.id}" aria-label="Rang acheté de ${defense.label}"><button class="rank-stepper-button" type="button" data-rank-step="1" aria-label="Augmenter ${defense.label} d’un rang">+</button></span><span class="trait-cost" data-cost="defenses.${defense.id}">0 PP</span></span>
-    </div>`).join("");
+  $("#defense-fields").innerHTML = defenseRules.map(defense => {
+    const baseLabel = characteristics.find(trait => trait.id === defense.baseFrom).label;
+    const controls = defense.buyable === false
+      ? `<span class="defense-source-note">${defense.description}</span>`
+      : `<span class="trait-control"><span class="rank-stepper"><button class="rank-stepper-button" type="button" data-rank-step="-1" aria-label="Diminuer ${defense.label} d’un rang">−</button><input type="number" min="0" max="20" step="1" value="${character.defenses[defense.id]}" data-rank="defenses.${defense.id}" aria-label="Rangs achetés de ${defense.label}"><button class="rank-stepper-button" type="button" data-rank-step="1" aria-label="Augmenter ${defense.label} d’un rang">+</button></span><span class="trait-cost" data-cost="defenses.${defense.id}">0 PP</span></span>`;
+    return `
+      <div class="trait-card defense-card">
+        <span><span class="trait-name">${defense.label} <small>${defense.shortLabel}</small></span><span class="trait-description">Base : ${baseLabel}${defense.buyable === false ? "" : ` · ${defense.description}`}</span></span>
+        <div class="defense-card-bottom">
+          <span class="defense-total"><small>Total</small><strong data-defense-total="${defense.id}">0</strong></span>
+          ${controls}
+        </div>
+      </div>`;
+  }).join("");
 }
 
 function renderComplications() {
@@ -139,18 +148,19 @@ function render() {
   $("#budget-detail").textContent = character.campaign.startingPowerPoints === null
     ? `Budget initial : ${result.budget} PP`
     : "Budget personnalisé";
+  const budgetInput = $("#power-points");
+  budgetInput.placeholder = character.campaign.startingPowerPoints === null ? String(result.budget) : "";
   $("#budget-hint").textContent = character.campaign.startingPowerPoints === null
-    ? `Par défaut : ${character.campaign.powerLevel} × ${campaignRules.defaultPointsPerPowerLevel} = ${pointBudget(character, campaignRules)} PP.`
+    ? `Valeur standard : ${character.campaign.powerLevel} × ${campaignRules.defaultPointsPerPowerLevel} PP. Laissez vide pour la conserver.`
     : "Budget personnalisé pour cette campagne.";
   $("#cost-breakdown").innerHTML = [
-    ["Caractéristiques", result.costs.characteristics], ["Défenses achetées", result.costs.defenses], ["Protection", result.costs.protection]
+    ["Caractéristiques", result.costs.characteristics], ["Défenses achetées", result.costs.defenses]
   ].map(([label, cost]) => `<div class="breakdown-line"><span>${label}</span><strong>${cost} PP</strong></div>`).join("");
-  $("#defense-summary").innerHTML = defenseRules.map(defense => {
-    const key = defense.id === "protection" ? "toughness" : defense.id;
-    return `<span class="defense-chip">${defense.id === "protection" ? "Robustesse" : defense.label}<strong>${result.defenses[key]}</strong></span>`;
-  }).join("");
+  for (const defense of defenseRules) {
+    $(`[data-defense-total="${defense.id}"]`).textContent = result.defenses[defense.id];
+  }
   for (const trait of characteristics) $( `[data-cost="characteristics.${trait.id}"]`).textContent = `${Number(character.characteristics[trait.id]) * trait.costPerRank} PP`;
-  for (const defense of defenseRules) $( `[data-cost="defenses.${defense.id}"]`).textContent = `${Number(character.defenses[defense.id]) * defense.costPerRank} PP`;
+  for (const defense of defenseRules.filter(item => item.buyable !== false)) $( `[data-cost="defenses.${defense.id}"]`).textContent = `${Number(character.defenses[defense.id]) * defense.costPerRank} PP`;
 
   const list = $("#validation-list");
   list.innerHTML = [...result.issues.map(message => ({ message, kind: "issue" })), ...result.info.map(message => ({ message, kind: "info" }))]
